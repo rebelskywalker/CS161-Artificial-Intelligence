@@ -1,0 +1,173 @@
+ ;HW 1: Chris Baker, UID: 105 180 929
+
+;Function: PAD
+;PAD is a function that takes an integer an returns
+;the Nth Padovan Sequence Number using if statements.
+;as well as recursively calling itself for values N>2
+;Prints a statement to ask for positive integer if N<0
+;Inputs: N
+;Outputs: Nth Padovan Number
+(defun PAD (N)
+  ;Check if the integer is not a natural number
+  (if (< N 0)
+      ;If negative number, return error string
+      "Testing Bad Input: Please enter a non-negative integer for padovan sequence"
+
+      ;Else If non-negative number, check if N<3, yes -> return 1 , no ->recursive step
+      (if (< N 3)
+          1
+          ;The recursive step calls N-2 and N-3
+          ;Each call will either go straight to 1 if the N' < 3 
+          ;If N' > 3 still then it continues recursion until N''... < 3
+          ;Since our base case is established, the functions will discover
+          ;The values for each N after returning 1 from inner most calls from original pair
+          (+ (PAD (- N 2)) (PAD (- N 3)))
+          )
+      )
+  )
+                                        ;Test Cases
+;(format t "~% TESTING PAD Function")
+;(Format t "~% Error Check:")
+;(Format t "~% PAD -1: ~d " (PAD -1))
+;(fresh-line)
+;(Format t "~% Valid Inputs:")
+;(format t "~% PAD 0: ~d " (PAD 0))
+;(format t "~% PAD 1: ~d " (PAD 1))
+;(format t "~% PAD 2: ~d " (PAD 2))
+;(format t "~% PAD 3: ~d " (PAD 3))
+;(format t "~% PAD 4: ~d " (PAD 4))
+;(format t "~% PAD 5: ~d " (PAD 5))
+;(format t "~% PAD 6: ~d " (PAD 6))
+;(format t "~% PAD 7: ~d " (PAD 7))
+;(format t "~% PAD 8: ~d " (PAD 8))
+;(format t "~% PAD 9: ~d " (PAD 9))
+;(format t "~% PAD 10: ~d " (PAD 10))
+;(format t "~% PAD 50: ~d " (PAD 50))
+;(format t "~% PAD 60: ~d " (PAD 60))
+;(format t "~% PAD 65: ~d " (PAD 65))
+;started slowing down alot between results here
+;(format t "~% PAD 70: ~d " (PAD 70))
+;(format t "~% PAD 75: ~d " (PAD 75))
+;I saw two printouts for 80 occur, I think this came from my previous test that didn't print out result for 80
+;(format t "~% PAD 80: ~d " (PAD 80))
+;(format t "~% PAD 100: ~d " (PAD 100))
+ ;(format t "~% PAD 160: ~d " (PAD 160))
+;(format t "~% PAD 200: ~d " (PAD 200))
+
+;I got the results for these much later and by the time I woke up the next day
+
+;Note that I tried PAD 160 and 200, but it never returned a result. Too large, too many calls, limited memory are all potential issues.
+;So the program could be making so many calls and processing that it takes forever to return end result, or times out, 
+;Or possibly stack overflow limited mem with more calls then it can handle for Large N
+
+;Function: SUMS 
+;SUMS is a function that takes an integer and returns
+;the number of additions performed for the  Nth Padovan
+;Sequence Number based on our above implementation of PADS.
+;SUMS recursively calls itself for values N>2, and
+;increases Sum by 1 + every recursive call
+;Prints a statement to ask for positive integer if N<0
+;Inputs: N
+;Outputs: Number of additions performed according to PADS
+(defun SUMS (N)
+  ;Check if the integer is not a natural number
+  (if (< N 0)
+      ;If negative number, return error string
+      "Testing Bad Input: Please enter a non-negative integer for padovan sequence"
+
+       ;Else If non-negative number, check if N<3, yes -> return 0 , no ->recursive step
+      ;Note: Now we are counting additions
+      ;To adjust for this I am now returning 0 additions to account for inputs N = 0, 1 ,2
+      ;As a result we must resolve a counter for additions within the recursive block of code
+      (if (< N 3)
+          0
+           ;The recursive step calls N-2 and N-3
+           ;Each call In SUMS will return 0 if the N' < 3 
+           ;If N' > 3 still then it continues recursion until N''... < 3
+           ;Since our base case is established, the functions will discover
+           ;The values for each call after returning 0 from inner most calls from original pair
+
+          ; A key difference here is that SUMS must count the additions from PADS
+          ;Any N<3 from PADS was set to return 1 without any explicit addition in my code
+          ;It is possible that the compiler/assembler performs optimizations that use addition steps
+          ;At the base level, but we will ignore that and focus on the LISP code.
+          ;Thus, we only need to count the additions which occur in my PADS function beginning at N>= 3 
+          ;We fix N<3 to return 0, and incorporate an increment of +1 in our recursive step to do so
+          ;This matches my scratch work on paper and makes sense because each recurse will look to add 2 numbers
+          ;Therefore, We add 1 for every recurse by including it in recursive step N >=3, and remove 1 from known values N < 3
+          (+ 1  (SUMS (- N 2)) (SUMS (- N 3)))
+          )
+      )
+  )
+;Test Cases SUMS
+
+;(fresh-line)
+;(format t "~% TESTING SUMS Function")
+;(Format t "~% Error Check:")
+;(Format t "~% SUMS -1: ~d " (SUMS -1))
+;(fresh-line)
+;(Format t "~% Valid Inputs:")
+;;(format t "~% SUMS 0: ~d " (SUMS 0))
+;(format t "~% SUMS 1: ~d " (SUMS 1))
+;(format t "~% SUMS 2: ~d " (SUMS 2))
+;(format t "~% SUMS 3: ~d " (SUMS 3))
+;(format t "~% SUMS 4: ~d " (SUMS 4))
+;(format t "~% SUMS 5: ~d " (SUMS 5))
+;(format t "~% SUMS 6: ~d " (SUMS 6))
+;(format t "~% SUMS 7: ~d " (SUMS 7))
+;(format t "~% SUMS 8: ~d " (SUMS 8))
+;(format t "~% SUMS 9: ~d " (SUMS 9))
+;(format t "~% SUMS 10: ~d " (SUMS 10))
+;(format t "~% SUMS 11: ~d " (SUMS 11))
+;(format t "~% SUMS 12: ~d " (SUMS 12))
+;(format t "~% SUMS 13: ~d " (SUMS 13))
+;(format t "~% SUMS 14: ~d " (SUMS 14))
+;(format t "~% SUMS 20: ~d " (SUMS 20))
+;(format t "~% SUMS 40: ~d " (SUMS 40))
+
+
+
+;Function: ANON 
+;ANON is a function that takes in a list known as TREE
+;and returns an anonymized symbolic version of that TREE as output
+;Each level of the tree is designated with another parenthesis
+;The top level, outermost parenthesis after the ' , is what holds
+;Every Subtree and node within the tree.
+; As shown in the hw page, we can imagine the left most element branches leftward
+;And the right most element branches rightward form a node
+;Elements on the same level should have same number of parenthesis enclosing arguments
+(defun ANON (TREE)
+  ;Check if it is an empty tree, nil , empty list
+  (if (equal TREE nil)
+      ;If it is empty, then return nil so we know its empty
+      nil
+      ;If it has exactly one element
+      (if (atom TREE)
+          ;Print a ? to represent that element, we use ' to escape it as a literal undefined
+          ;Symbol and to write it as a string or symbolic list representation
+          '?
+          ;Else if its not empty, recursively run cons to generate a proper list 
+          ;By extracting the first element and the remaining elements after the first
+          ;Separately and performing recursion till base case resolves into ? at various depths
+          (cons (ANON (car TREE)) (ANON (cdr TREE)))
+          )
+      )
+  )
+;TEST CASES ANON
+;(fresh-line)
+;(format t "~% TESTING TREE Function")
+;(Format t "~% empty Tree:")
+;(Format t "~% ANON Empty TREE: ~d " (ANON nil))
+;(fresh-line)
+;(Format t "~% Valid Inputs:")
+;(format t "~% ANON '42: ~d " (ANON '42) )
+;(format t "~% ANON 'FOO: ~d " (ANON 'FOO) )
+;(format t "~% ANON '(((L E) F) T): ~d " (ANON '(((L E) F) T) ))
+;(format t "~% ANON '(5 FOO 3.1 -0.2): ~d " (ANON '(5 FOO 3.1 -0.2) ))
+;(format t "~% ANON '(1 (FOO 3.1) -0.2: ~d " (ANON '(1 (FOO 3.1) -0.2) ))
+;(format t "~% ANON '(((1 2) (FOO 3.1)) (BAR -0.2)): ~d " (ANON '(((1 2) (FOO 3.1)) (BAR -0.2))  ))
+;(format t "~% ANON '(R (I (G ( H T)))): ~d " (ANON '(R (I (G ( H T)))) ))
+
+
+
+

@@ -1,0 +1,134 @@
+Chris Baker, 105 180 929
+HW1
+
+Note:
+Question @23 on Piazza gave permission to use if in the code.
+A change to cond could be done by editing a couple lines.
+I completed the code with the permission to use if, but they are generally style differences.
+
+
+Q1:
+ TESTING PAD Function
+ Error Check:
+ PAD -1: Testing Bad Input: Please enter a non-negative integer for padovan sequence 
+
+ Valid Inputs:
+ PAD 0: 1 
+ PAD 1: 1 
+ PAD 2: 1 
+ PAD 3: 2 
+ PAD 4: 2 
+ PAD 5: 3 
+ PAD 6: 4 
+ PAD 7: 5 
+ PAD 8: 7 
+ PAD 9: 9 
+ PAD 10: 12 
+ PAD 50: 922111 
+ PAD 60: 15346786 
+ PAD 65: 62608681 
+ PAD 70: 255418101 
+ PAD 80: 4250949112 
+
+As shown above my PAD function takes an input N and calculates the
+correct PADOVAN nth Padovan Number. I also rewrote sequence to
+be of the form PAD(N) = PAD(n-2) + PAD(n-3)
+
+The first numbers came fairly quickly, but I noticed as the input
+N gets larger so does the amount of time needed to return the
+result. I doubled numbers starting from 10 to test inputs 20, 40,
+80, and 160 (and 100 and 200) , but 100 to 200 never returned results for me. I also never thought
+I would see a result for N = 80, but after I ran three tries and
+looked for a possible threshold (where LISP might not be able to
+handle a certain large amount of calls in the limited memory),
+I eventually had the results for PAD 80 show up on my third test. 
+Maybe in certain test runs the program quit due to stack memory issues,
+or took so long that I eventually got a result from a previous test
+showing up after a long delay on the buffer during a new test.
+
+Thus, the recursive calls grow at a exponential rate and at some
+point as N increases the time to perform exponentially increasing
+recursions simply takes too long. This is why I was able to test
+several renditions of my code on inputs 0 to 40 before I saw a result
+for 80 randomly show up in the buffer very late during a different
+test. Further, the memory available to the function is limited. The stack has
+a limited amount of memory and without specifically allocating or performing
+some manipulation on the stack there is the possiblilty that a stack overflow
+could be caused or too many recursive calls can be made if N is large enough.
+
+
+Q2:
+ TESTING SUMS Function
+ Error Check:
+ SUMS -1: Testing Bad Input: Please enter a non-negative integer for padovan sequence 
+
+ Valid Inputs:
+ SUMS 0: 0 
+ SUMS 1: 0 
+ SUMS 2: 0 
+ SUMS 3: 1 
+ SUMS 4: 1 
+ SUMS 5: 2 
+ SUMS 6: 3 
+ SUMS 7: 4 
+ SUMS 8: 6 
+ SUMS 9: 8 
+ SUMS 10: 11 
+ SUMS 11: 15 
+ SUMS 12: 20 
+ SUMS 13: 27 
+ SUMS 14: 36 
+ SUMS 20: 199 
+ SUMS 40: 55404 
+
+As shown above SUMS takes a single argument N and produces the number of additions that occur within
+my PAD function if exxecuted specificly as I wrote the code. I mention this because th assembler/compiler
+could make optimization decisions which could introduce adds at a lower level. 
+I verified these results on paper first before I attempted to solve the problem. I realized that every time
+I perform a recursive step I would introduce another set of parenthesis with and addition symbol to handle a
+new inner sum. It looked something like this:
+N=3 : SUMS (3) -> (+ SUMS(2) SUMS(1)) 
+
+However, PAD (3) would return (1 + 1) here for the value 2.
+
+But, we notice there is only 1 addition. Therefore, as I wrote scratch work for N up to 10, I verified that
+each recursion introduces another inner parenthesis which brings an addition between two elements. It is possible
+for either element to be N >= 3 which would cause another inner parenthesis with another addition. So, with either or
+Both recursing I decided to set my baseline case of N<3 to return 0 since no addition is needed when I know the value
+for those numbers and just return that value. 
+
+For, any N >=3 I included a increment of +1 with: (+ 1 SUM(- N 2) SUM(- N 3))
+SUMS (3) -> (+ 1 SUMS (- N 2) (- N 3)) -> (+ 1 0 0) 
+which returns 1 as desired
+
+My reasoning captures why we see that the values for SUMS() is 1 less than corresponding N value inputs for PAD().
+Because our baseline tests are known values, so they do not require any addition, just returning the answer.
+But, for any recursion that takes place, we can possibly branch out like a tree. For one of the two arguments in the
+addition we have 3 possibilities: Both are known values without need to recurse, 1 is known and other requires recurse, or both
+require recurse to be known. Each time we recurse we add 1 since the calling SUM(N) performs addition on two arguments N-2 and N-3.
+So we just count recurses in this case and set our baseline to return 0 which removes an initial +1 when compared to PAD().
+
+Q3
+ TESTING TREE Function
+ NUll Tree Check:
+ ANON EMPTY TREE: NIL   
+ ;I wrote Empty Tree as the string to identify my null test, but the argument was (ANON nil) to check an empty list/tree 
+
+ Valid Inputs:
+ ANON '42: ? 
+ ANON 'FOO: ? 
+ ANON '(((L E) F) T): (((? ?) ?) ?) 
+ ANON '(5 FOO 3.1 -0.2): (? ? ? ?) 
+ ANON '(1 (FOO 3.1) -0.2: (? (? ?) ?) 
+ ANON '(((1 2) (FOO 3.1)) (BAR -0.2)): (((? ?) (? ?)) (? ?)) 
+ ANON '(R (I (G ( H T)))): (? (? (? (? ?)))) 
+
+As described in my code. We see the correct results for the anonymized tree using symbolic ? at each respective position
+where there was elements. I designated a value of nil to be returned if there was no list element to interpret or if it was empty.
+It can be imagined that a conceptual root node connects to every element in the symbolic tree at the first level where the first
+parenthesis pair sorrounds the whole list: '( ... ) 
+
+Then within this list can be other elements such as  FOO or L or -0.2 , however there can also be an element that is a list itself like
+(L E) or (FOO 3.1) . In this case this designates another level in that branch of the tree where a node will branch to those elements too.
+Thus, we use ANON to represent a symbolic tree that can display elements and understand the corresponding LISP code and how lists
+can be a list of elements and can even be a list of inner lists and elements , all of which can be represented with a tree concept.
